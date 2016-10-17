@@ -146,11 +146,11 @@ func (t Time) String() string {
 }
 
 // MarshalJSON implements the Marshaler interface for Time.
-func (g *Time) MarshalJSON() ([]byte, error) {
-	if g == nil {
+func (t *Time) MarshalJSON() ([]byte, error) {
+	if t == nil {
 		return []byte("null"), nil
 	}
-	return []byte(fmt.Sprintf("%d", time.Time(*g).Unix())), nil
+	return []byte(fmt.Sprintf("%d", time.Time(*t).Unix())), nil
 }
 
 const (
@@ -158,32 +158,32 @@ const (
 )
 
 // UnmarshalJSON implements the Unmarshaler interface for Time.
-func (g *Time) UnmarshalJSON(d []byte) error {
+func (t *Time) UnmarshalJSON(d []byte) error {
 	var f interface{}
 	err := json.Unmarshal(d, &f)
 	if err != nil {
 		return err
 	}
-	switch t := f.(type) {
+	switch pt := f.(type) {
 	case string:
-		f, err := time.Parse(postgresTimeFormat, t)
+		f, err := time.Parse(postgresTimeFormat, pt)
 		if err != nil {
-			i, err := strconv.Atoi(t)
+			i, err := strconv.Atoi(pt)
 			if err != nil {
 				return fmt.Errorf("cannot parse gengo string to time: %s", t)
 			}
-			*g = Time(time.Unix(int64(i), 0))
+			*t = Time(time.Unix(int64(i), 0))
 			return nil
 		}
-		*g = Time(f)
+		*t = Time(f)
 	case int:
-		*g = Time(time.Unix(int64(t), 0))
+		*t = Time(time.Unix(int64(pt), 0))
 		return nil
 	case float64:
-		*g = Time(time.Unix(int64(t), 0))
+		*t = Time(time.Unix(int64(pt), 0))
 		return nil
 	default:
-		return fmt.Errorf("unknown type for gengo time (%T) %v", t, t)
+		return fmt.Errorf("unknown type for gengo time (%T) %v", pt, pt)
 	}
 	return nil
 }

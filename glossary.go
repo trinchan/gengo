@@ -61,18 +61,10 @@ type GetGlossaryRequest struct {
 	ID int `json:"id"`
 }
 
-// GetGlossaryRequestOption defines the interface for transforming an GetGlossaryRequest with options.
-type GetGlossaryRequestOption interface {
-	Apply(*GetGlossaryRequest)
-}
-
 // NewGetGlossaryRequest creates a new GetGlossaryRequest with the given id and options.
-func NewGetGlossaryRequest(id int, options ...GetGlossaryRequestOption) *GetGlossaryRequest {
+func NewGetGlossaryRequest(id int) *GetGlossaryRequest {
 	g := &GetGlossaryRequest{
 		ID: id,
-	}
-	for _, option := range options {
-		option.Apply(g)
 	}
 	return g
 }

@@ -19,21 +19,18 @@ type PostJobsRequest struct {
 	GroupComment *string       `json:"comment,omitempty"`
 }
 
-type PostJobsRequestOption interface {
-	Apply(*PostJobsRequestOption)
+type PostJobsRequestOption func(*PostJobsRequest)
+
+func WithGroupComment(s string) PostJobsRequestOption {
+	return func(r *PostJobsRequest) {
+		r.GroupComment = &s
+	}
 }
 
-type PostJobsCommentOption string
-
-func (o PostJobsCommentOption) Apply(p *PostJobsRequest) {
-	s := string(o)
-	p.GroupComment = &s
-}
-
-func NewPostJobsRequest(jobs []*JobRequest, options ...PostJobsCommentOption) *PostJobsRequest {
+func NewPostJobsRequest(jobs []*JobRequest, options ...PostJobsRequestOption) *PostJobsRequest {
 	p := &PostJobsRequest{Jobs: jobs}
 	for _, option := range options {
-		option.Apply(p)
+		option(p)
 	}
 	return p
 }
@@ -60,26 +57,24 @@ type GetJobsRequest struct {
 	Options url.Values
 }
 
-type GetJobsRequestOption interface {
-	Apply(*GetJobsRequest)
+type GetJobsRequestOption func(*GetJobsRequest)
+
+func WithStatus(s string) GetJobsRequestOption {
+	return func(r *GetJobsRequest) {
+		r.Options["status"] = []string{string(s)}
+	}
 }
 
-type GetJobsStatusOption string
-
-func (g GetJobsStatusOption) Apply(r *GetJobsRequest) {
-	r.Options["status"] = []string{string(g)}
+func WithTimestampAfter(t Time) GetJobsRequestOption {
+	return func(r *GetJobsRequest) {
+		r.Options["timestamp_after"] = []string{strconv.Itoa(int(time.Time(t).Unix()))}
+	}
 }
 
-type GetJobsTimestampOption Time
-
-func (g GetJobsTimestampOption) Apply(r *GetJobsRequest) {
-	r.Options["timestamp_after"] = []string{strconv.Itoa(int(time.Time(g).Unix()))}
-}
-
-type GetJobsCountOption int
-
-func (g GetJobsCountOption) Apply(r *GetJobsRequest) {
-	r.Options["count"] = []string{strconv.Itoa(int(g))}
+func WithCount(i int) GetJobsRequestOption {
+	return func(r *GetJobsRequest) {
+		r.Options["count"] = []string{strconv.Itoa(i)}
+	}
 }
 
 func NewGetJobsRequest(options ...GetJobsRequestOption) *GetJobsRequest {
@@ -87,7 +82,7 @@ func NewGetJobsRequest(options ...GetJobsRequestOption) *GetJobsRequest {
 		Options: url.Values{},
 	}
 	for _, option := range options {
-		option.Apply(j)
+		option(j)
 	}
 	return j
 }

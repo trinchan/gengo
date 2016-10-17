@@ -42,20 +42,18 @@ type LanguagePairsRequest struct {
 	Options url.Values
 }
 
-type LanguagePairsRequestOption interface {
-	Apply(*LanguagePairsRequest)
-}
+type LanguagePairsRequestOption func(*LanguagePairsRequest)
 
-type LanguagePairsSourceOption string
-
-func (o LanguagePairsSourceOption) Apply(r *LanguagePairsRequest) {
-	r.Options["lc_src"] = []string{string(o)}
+func WithSource(s language.Code) LanguagePairsRequestOption {
+	return func(r *LanguagePairsRequest) {
+		r.Options["lc_src"] = []string{string(s)}
+	}
 }
 
 func NewLanguagePairsRequest(options ...LanguagePairsRequestOption) *LanguagePairsRequest {
 	r := &LanguagePairsRequest{Options: url.Values{}}
 	for _, option := range options {
-		option.Apply(r)
+		option(r)
 	}
 	return r
 }

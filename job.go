@@ -13,8 +13,8 @@ const (
 )
 
 type PreferredTranslator struct {
-	ID        int   `json:"id"`
-	LastLogin int64 `json:"last_login"`
+	ID        int  `json:"id"`
+	LastLogin Time `json:"last_login"`
 }
 
 const (
@@ -70,7 +70,7 @@ func NewFileJobRequest(filename string, lp language.Pair, tier Tier, options ...
 		Tier: tier,
 	}
 	for _, option := range options {
-		option.Apply(jr)
+		option(jr)
 	}
 	fjr := &FileJobRequest{
 		JobRequest: jr,
@@ -87,96 +87,89 @@ func NewJobRequest(text string, lp language.Pair, tier Tier, options ...JobOptio
 		BodySrc: &text,
 	}
 	for _, option := range options {
-		option.Apply(jr)
+		option(jr)
 	}
 	return jr
 }
 
-type JobOption interface {
-	Apply(*JobRequest)
+type JobOption func(*JobRequest)
+
+func WithSlug(s string) JobOption {
+	return func(jr *JobRequest) {
+		jr.Slug = s
+	}
 }
 
-type SlugOption string
-
-func (o SlugOption) Apply(jr *JobRequest) {
-	jr.Slug = string(o)
+func WithForce(b Bool) JobOption {
+	return func(jr *JobRequest) {
+		jr.Force = b
+	}
 }
 
-type ForceOption Bool
-
-func (o ForceOption) Apply(jr *JobRequest) {
-	jr.Force = Bool(o)
+func WithComment(c string) JobOption {
+	return func(jr *JobRequest) {
+		jr.Comment = c
+	}
 }
 
-type CommentOption struct {
-	Comment string
+func WithPreferred(b Bool) JobOption {
+	return func(jr *JobRequest) {
+		jr.UsePreferred = b
+	}
 }
 
-func (o CommentOption) Apply(jr *JobRequest) {
-	jr.Comment = o.Comment
+func WithAttachments(a []Attachment) JobOption {
+	return func(jr *JobRequest) {
+		jr.Attachments = a
+	}
 }
 
-type PreferredOption Bool
-
-func (o PreferredOption) Apply(jr *JobRequest) {
-	jr.UsePreferred = Bool(o)
+func WithCallbackURL(s string) JobOption {
+	return func(jr *JobRequest) {
+		jr.CallbackURL = s
+	}
 }
 
-type AttachmentOption []Attachment
-
-func (o AttachmentOption) Apply(jr *JobRequest) {
-	jr.Attachments = []Attachment(o)
+func WithAutoApprove(b Bool) JobOption {
+	return func(jr *JobRequest) {
+		jr.AutoApprove = b
+	}
 }
 
-type CallbackURLOption string
-
-func (o CallbackURLOption) Apply(jr *JobRequest) {
-	jr.CallbackURL = string(o)
+func WithCustomData(s string) JobOption {
+	return func(jr *JobRequest) {
+		jr.CustomData = s
+	}
 }
 
-type AutoApproveOption Bool
-
-func (o AutoApproveOption) Apply(jr *JobRequest) {
-	jr.AutoApprove = Bool(o)
+func WithPurpose(s string) JobOption {
+	return func(jr *JobRequest) {
+		jr.Purpose = s
+	}
 }
 
-type CustomDataOption string
-
-func (o CustomDataOption) Apply(jr *JobRequest) {
-	jr.CustomData = string(o)
+func WithAsGroup(b Bool) JobOption {
+	return func(jr *JobRequest) {
+		jr.AsGroup = b
+	}
 }
 
-type PurposeOption string
-
-func (o PurposeOption) Apply(jr *JobRequest) {
-	jr.Purpose = string(o)
+func WithGlossaryID(i int) JobOption {
+	return func(jr *JobRequest) {
+		jr.GlossaryID = &i
+	}
 }
 
-type GroupOption Bool
-
-func (o GroupOption) Apply(jr *JobRequest) {
-	jr.AsGroup = Bool(o)
+func WithMaxChars(i int) JobOption {
+	return func(jr *JobRequest) {
+		jr.MaxChars = &i
+	}
 }
 
-type GlossaryOption int
-
-func (o GlossaryOption) Apply(jr *JobRequest) {
-	id := int(o)
-	jr.GlossaryID = &id
-}
-
-type MaxCharsOption int
-
-func (o MaxCharsOption) Apply(jr *JobRequest) {
-	max := int(o)
-	jr.MaxChars = &max
-}
-
-type PositionOption int
-
-func (o PositionOption) Apply(jr *JobRequest) {
-	p := int(o)
-	jr.Position = &p
+func WithPosition(i int) JobOption {
+	return func(jr *JobRequest) {
+		jr.Position = &i
+	}
 }
 
 type PostJobResponse struct {
@@ -224,20 +217,17 @@ func NewReviseJobRequest(id int, options ...ReviseJobOption) *ReviseJobRequest {
 		ID: id,
 	}
 	for _, option := range options {
-		option.Apply(rjr)
+		option(rjr)
 	}
 	return rjr
 }
 
-type ReviseJobOption interface {
-	Apply(*ReviseJobRequest)
-}
+type ReviseJobOption func(*ReviseJobRequest)
 
-type ReviseJobCommentOption string
-
-func (o ReviseJobCommentOption) Apply(r *ReviseJobRequest) {
-	c := string(o)
-	r.Comment = &c
+func WithRevisionComment(s string) ReviseJobOption {
+	return func(r *ReviseJobRequest) {
+		r.Comment = &s
+	}
 }
 
 type ApproveJobRequest struct {
@@ -253,41 +243,35 @@ func NewApproveJobRequest(id int, options ...ApproveJobOption) *ApproveJobReques
 		ID: id,
 	}
 	for _, option := range options {
-		option.Apply(rjr)
+		option(rjr)
 	}
 	return rjr
 }
 
-type ApproveJobOption interface {
-	Apply(*ApproveJobRequest)
+type ApproveJobOption func(*ApproveJobRequest)
+
+func WithRating(i int) ApproveJobOption {
+	return func(r *ApproveJobRequest) {
+		r.Rating = &i
+	}
 }
 
-type ApproveJobRatingOption int
-
-func (o ApproveJobRatingOption) Apply(r *ApproveJobRequest) {
-	rating := int(o)
-	r.Rating = &rating
+func WithTranslatorComment(s string) ApproveJobOption {
+	return func(r *ApproveJobRequest) {
+		r.CommentForTranslator = &s
+	}
 }
 
-type ApproveJobTranslatorCommentOption string
-
-func (o ApproveJobTranslatorCommentOption) Apply(r *ApproveJobRequest) {
-	c := string(o)
-	r.CommentForTranslator = &c
+func WithGengoComment(s string) ApproveJobOption {
+	return func(r *ApproveJobRequest) {
+		r.CommentForGengo = &s
+	}
 }
 
-type ApproveJobGengoCommentOption string
-
-func (o ApproveJobGengoCommentOption) Apply(r *ApproveJobRequest) {
-	c := string(o)
-	r.CommentForGengo = &c
-}
-
-type ApproveJobPublicCommentOption Bool
-
-func (o ApproveJobPublicCommentOption) Apply(r *ApproveJobRequest) {
-	p := Bool(o)
-	r.Public = &p
+func WithPublicComment(b Bool) ApproveJobOption {
+	return func(r *ApproveJobRequest) {
+		r.Public = &b
+	}
 }
 
 type RejectedJob struct {
@@ -321,41 +305,30 @@ func NewRejectJobRequest(id int, reason, comment, captcha string, options ...Rej
 		Captcha: captcha,
 	}
 	for _, option := range options {
-		option.Apply(rjr)
+		option(rjr)
 	}
 	return rjr
 }
 
-type RejectJobOption interface {
-	Apply(*RejectJobRequest)
+type RejectJobOption func(*RejectJobRequest)
+
+func WithFollowUp(s string) RejectJobOption {
+	return func(r *RejectJobRequest) {
+		r.FollowUp = &s
+	}
 }
 
-type RejectJobFollowUpOption string
-
-func (o RejectJobFollowUpOption) Apply(r *RejectJobRequest) {
-	f := string(o)
-	r.FollowUp = &f
-}
-
-type RejectJobCaptchaURLOption string
-
-func (o RejectJobCaptchaURLOption) Apply(r *RejectJobRequest) {
-	c := string(o)
-	r.CaptchaURL = &c
+func WithCaptchaURL(url string) RejectJobOption {
+	return func(r *RejectJobRequest) {
+		r.CaptchaURL = &url
+	}
 }
 
 type ArchiveJobRequest int
 
-func NewArchiveJobRequest(id int, options ...ArchiveJobOption) *ArchiveJobRequest {
+func NewArchiveJobRequest(id int) *ArchiveJobRequest {
 	ajr := ArchiveJobRequest(id)
-	for _, option := range options {
-		option.Apply(&ajr)
-	}
 	return &ajr
-}
-
-type ArchiveJobOption interface {
-	Apply(*ArchiveJobRequest)
 }
 
 type GetJobRequest struct {
@@ -481,17 +454,10 @@ type AddJobCommentRequest struct {
 	Body string `json:"body"`
 }
 
-type AddJobCommentRequestOption interface {
-	Apply(*AddJobCommentRequest)
-}
-
-func NewAddJobCommentRequest(id int, comment string, options ...AddJobCommentRequestOption) *AddJobCommentRequest {
+func NewAddJobCommentRequest(id int, comment string) *AddJobCommentRequest {
 	r := &AddJobCommentRequest{
 		ID:   id,
 		Body: comment,
-	}
-	for _, option := range options {
-		option.Apply(r)
 	}
 	return r
 }

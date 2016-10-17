@@ -26,7 +26,7 @@ const (
 	ProductionBaseURL = "http://api.gengo.com/v2"
 )
 
-// SetLogger let's library users supply a logger, so that api debugging
+// SetLogger lets library users supply a logger, so that api debugging
 // can be logged along with the application's debugging info.
 func SetLogger(l *log.Logger) {
 	logger = l

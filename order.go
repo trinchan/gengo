@@ -35,18 +35,10 @@ type OrderGetRequest struct {
 	OrderID int
 }
 
-// OrderGetOptions defines the interface for transforming an OrderGetRequest with options.
-type OrderGetOptions interface {
-	Apply(*OrderGetRequest)
-}
-
-// NewOrderGetRequest creates a new OrderGetRequest with the given id and options.
-func NewOrderGetRequest(orderID int, options ...OrderGetOptions) *OrderGetRequest {
+// NewOrderGetRequest creates a new OrderGetRequest with the given id.
+func NewOrderGetRequest(orderID int) *OrderGetRequest {
 	ogr := &OrderGetRequest{
 		OrderID: orderID,
-	}
-	for _, option := range options {
-		option.Apply(ogr)
 	}
 	return ogr
 }
@@ -63,18 +55,10 @@ type OrderCancelRequest struct {
 	OrderID int
 }
 
-// OrderCancelOptions defines the interface for transforming an OrderCancelRequest with options.
-type OrderCancelOptions interface {
-	Apply(*OrderCancelRequest)
-}
-
-// NewOrderCancelRequest creates a new OrderCancelRequest with the given id and options.
-func NewOrderCancelRequest(orderID int, options ...OrderCancelOptions) *OrderCancelRequest {
+// NewOrderCancelRequest creates a new OrderCancelRequest with the given id.
+func NewOrderCancelRequest(orderID int) *OrderCancelRequest {
 	ogr := &OrderCancelRequest{
 		OrderID: orderID,
-	}
-	for _, option := range options {
-		option.Apply(ogr)
 	}
 	return ogr
 }
@@ -90,20 +74,12 @@ type OrderCommentsRequest struct {
 	OrderID int
 }
 
-// NewOrderCommentsRequest creates a new OrderCommentsRequest with the given id and options.
-func NewOrderCommentsRequest(orderID int, options ...OrderCommentsOption) *OrderCommentsRequest {
+// NewOrderCommentsRequest creates a new OrderCommentsRequest with the given id.
+func NewOrderCommentsRequest(orderID int) *OrderCommentsRequest {
 	ocr := &OrderCommentsRequest{
 		OrderID: orderID,
 	}
-	for _, option := range options {
-		option.Apply(ocr)
-	}
 	return ocr
-}
-
-// OrderCommentsOption defines the interface for transforming an OrderCommentsRequest with options.
-type OrderCommentsOption interface {
-	Apply(*OrderCommentsRequest)
 }
 
 // CommentsResponse defines the response from the OrderComments() and JobComments() endpoints.
@@ -134,19 +110,11 @@ type AddOrderCommentRequest struct {
 	Body    string `json:"body"`
 }
 
-// AddOrderCommentRequestOption defines the interface for transforming an AddOrderCommentRequest with options.
-type AddOrderCommentRequestOption interface {
-	Apply(*AddOrderCommentRequest)
-}
-
-// NewAddOrderCommentRequest creates a new AddOrderCommentRequest with the given id and options.
-func NewAddOrderCommentRequest(orderID int, comment string, options ...AddOrderCommentRequestOption) *AddOrderCommentRequest {
+// NewAddOrderCommentRequest creates a new AddOrderCommentRequest with the given id.
+func NewAddOrderCommentRequest(orderID int, comment string) *AddOrderCommentRequest {
 	r := &AddOrderCommentRequest{
 		OrderID: orderID,
 		Body:    comment,
-	}
-	for _, option := range options {
-		option.Apply(r)
 	}
 	return r
 }
