@@ -1,6 +1,6 @@
 Golang client for the [Gengo](https://gengo.com) API
 
-Documentation and testing WIP
+[Documentation](https://godoc.org/github.com/trinchan/gengo) and testing WIP
 
 ```go
 package main
