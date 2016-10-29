@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/trinchan/gengo/language"
+	"github.com/trinchan/gengo/lang"
 )
 
 const (
@@ -34,7 +34,7 @@ type Glossary struct {
 	ID         int                `json:"id"`
 	UserID     int                `json:"customer_user_id"`
 	SourceID   int                `json:"source_language_id"`
-	SourceCode language.Code      `json:"source_language_code"`
+	SourceCode lang.Code          `json:"source_language_code"`
 	Targets    []GlossaryLanguage `json:"target_languages"`
 	Public     bool               `json:"is_public"`
 	UnitCount  int                `json:"unit_count"`
@@ -45,8 +45,8 @@ type Glossary struct {
 
 // GlossaryLanguage defines the ID and code pair for glossary responses
 type GlossaryLanguage struct {
-	ID   int           `json:"0"`
-	Code language.Code `json:"1"`
+	ID   int       `json:"0"`
+	Code lang.Code `json:"1"`
 }
 
 // ListGlossaries retrieves a list of glossaries that belongs to the authenticated user.

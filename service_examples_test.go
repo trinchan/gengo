@@ -3,7 +3,7 @@ package gengo
 import (
 	"fmt"
 
-	"github.com/trinchan/gengo/language"
+	"github.com/trinchan/gengo/lang"
 )
 
 // Get all language pairs

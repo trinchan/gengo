@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/trinchan/gengo/language"
+	"github.com/trinchan/gengo/lang"
 )
 
 const (
@@ -38,7 +38,7 @@ const (
 
 type JobRequest struct {
 	Type string `json:"type"`
-	language.Pair
+	lang.Pair
 	Tier         Tier         `json:"tier"`
 	Slug         string       `json:"slug"`
 	Attachments  []Attachment `json:"attachments"`
@@ -63,7 +63,7 @@ type FileJobRequest struct {
 	FileKey  string `json:"file_key"`
 }
 
-func NewFileJobRequest(filename string, lp language.Pair, tier Tier, options ...JobOption) *FileJobRequest {
+func NewFileJobRequest(filename string, lp lang.Pair, tier Tier, options ...JobOption) *FileJobRequest {
 	jr := &JobRequest{
 		Type: "file",
 		Pair: lp,
@@ -79,7 +79,7 @@ func NewFileJobRequest(filename string, lp language.Pair, tier Tier, options ...
 	return fjr
 }
 
-func NewJobRequest(text string, lp language.Pair, tier Tier, options ...JobOption) *JobRequest {
+func NewJobRequest(text string, lp lang.Pair, tier Tier, options ...JobOption) *JobRequest {
 	jr := &JobRequest{
 		Type:    "text",
 		Pair:    lp,
@@ -177,7 +177,7 @@ type PostJobResponse struct {
 	OrderID Int    `json:"order_id"`
 	BodySrc string `json:"body_src"`
 	BodyTgt string `json:"body_tgt"`
-	language.Pair
+	lang.Pair
 	Tier
 	UnitCount          Int     `json:"unit_count"`
 	Credits            Float64 `json:"credits"`

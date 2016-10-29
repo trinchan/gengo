@@ -10,7 +10,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/trinchan/gengo/language"
+	"github.com/trinchan/gengo/lang"
 )
 
 const (
@@ -32,7 +32,7 @@ func (lp *LanguagePairsResponse) UnmarshalJSON(data []byte) error {
 }
 
 type LanguagePairWithPrice struct {
-	language.Pair
+	lang.Pair
 	Tier
 	Currency  string  `json:"currency"`
 	UnitPrice Float64 `json:"unit_price"`
@@ -44,7 +44,7 @@ type LanguagePairsRequest struct {
 
 type LanguagePairsRequestOption func(*LanguagePairsRequest)
 
-func WithSource(s language.Code) LanguagePairsRequestOption {
+func WithSource(s lang.Code) LanguagePairsRequestOption {
 	return func(r *LanguagePairsRequest) {
 		r.Options["lc_src"] = []string{string(s)}
 	}

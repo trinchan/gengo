@@ -1,4 +1,4 @@
-package language
+package lang
 
 // Code is a language code used by Gengo.
 type Code string

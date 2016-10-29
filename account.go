@@ -1,6 +1,6 @@
 package gengo
 
-import "github.com/trinchan/gengo/language"
+import "github.com/trinchan/gengo/lang"
 
 const (
 	accountNamespace = "/account"
@@ -58,7 +58,7 @@ type PreferredTranslatorsResponse struct {
 
 // PreferredTranslatorResponse defines the structure for a single PreferredTranslator in a PreferredTranslatorsResponse.
 type PreferredTranslatorResponse struct {
-	language.Pair
+	lang.Pair
 	Tier
 	Translators []PreferredTranslator `json:"translators"`
 }
