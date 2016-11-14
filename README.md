@@ -8,16 +8,16 @@ package main
 import (
 	"fmt"
 
-	"github.com/trinchan/gengo"
+	. "github.com/trinchan/gengo"
 	"github.com/trinchan/gengo/lang"
 )
 
 func main() {
 	// Set GENGO_PUBLIC_KEY, GENGO_PRIVATE_KEY environment variables
-	g := gengo.NewFromEnv()
-	// or use gengo.New
-	// g := gengo.New(publicKey, privateKey, gengo.SandboxURL)
-	req := gengo.NewLanguagePairsRequest(gengo.WithSource(lang.Japanese))
+	g := NewFromEnv()
+	// or use New
+	// g := New(publicKey, privateKey, SandboxURL)
+	req := NewLanguagePairsRequest(WithSource(lang.Japanese))
 	r, err := g.LanguagePairs(req)
 	if err != nil {
 		panic(fmt.Errorf("Error retrieving language pairs: %v", err))
